@@ -1,3 +1,4 @@
+name             'ssl_certificates'
 maintainer       'Trond Arve Nordheim'
 maintainer_email 't@binarymarbles.com'
 license          'Apache 2.0'
