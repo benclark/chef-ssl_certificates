@@ -22,6 +22,8 @@ define :ssl_certificate do
   Chef::Log.info "Looking for SSL certificate #{name.inspect}"
   cert = search(:certificates, "name:#{name}").first
 
+  raise "Could not find a data bag item with 'name:#{name}' in the 'certificates' data bag" if cert.nil?
+
   directory node[:ssl_certificates][:path] do
     owner 'root'
     group 'ssl-cert'
