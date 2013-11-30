@@ -45,31 +45,27 @@ define :ssl_certificate do
     end
   end
 
-  if cert['ca_bundle'] && ! params[:ca_bundle_combined]
-    file "#{node[:ssl_certificates][:path]}/#{name}.ca-bundle" do
-      content cert['ca_bundle']
-      owner 'root'
-      group 'ssl-cert'
-      mode '0640'
-    end
+  file "#{node[:ssl_certificates][:path]}/#{name}.ca-bundle" do
+    content cert['ca_bundle']
+    owner 'root'
+    group 'ssl-cert'
+    mode '0640'
+    only_if { cert['ca_bundle'] && ! params[:ca_bundle_combined] }
   end
 
-  if cert['key']
-    file "#{node[:ssl_certificates][:path]}/#{name}.key" do
-      content cert['key']
-      owner 'root'
-      group 'ssl-cert'
-      mode '0640'
-
-    end
+  file "#{node[:ssl_certificates][:path]}/#{name}.key" do
+    content cert['key']
+    owner 'root'
+    group 'ssl-cert'
+    mode '0640'
+    only_if { cert['key'] }
   end
 
-  if cert['pem']
-    file "#{node[:ssl_certificates][:path]}/#{name}.pem" do
-      content cert['pem']
-      owner 'root'
-      group 'ssl-cert'
-      mode '0640'
-    end
+  file "#{node[:ssl_certificates][:path]}/#{name}.pem" do
+    content cert['pem']
+    owner 'root'
+    group 'ssl-cert'
+    mode '0640'
+    only_if { cert['pem'] }
   end
 end
