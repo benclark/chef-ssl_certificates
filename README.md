@@ -1,5 +1,7 @@
 ## DESCRIPTION
 
+[![Build Status](https://travis-ci.org/TYPO3-cookbooks/ssl_certificates.png)](https://travis-ci.org/TYPO3-cookbooks/ssl_certificates)
+
 Installs and configures SSL certificates for a node.
 
 This cookbook is inspired by the 37 Signals SSL certificates cookbook.
