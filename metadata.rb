@@ -10,6 +10,9 @@ supports         'debian'
 
 recipe           'ssl_certificates', 'Installs and configures SSL certificates.'
 
+# This dependency is for Chef Solo only, so we don't really want to depend on this in Chef Client
+# depends          'chef-solo-search'
+
 attribute 'ssl_certificates',
   :display_name => 'SSL certificates',
   :description => 'Hash of SSL certificate attributes.',
