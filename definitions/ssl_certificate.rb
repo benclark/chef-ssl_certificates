@@ -20,6 +20,12 @@
 define :ssl_certificate do
   name = params[:name] =~ /\*\.(.+)/ ? "#{$1}_wildcard" : params[:name]
   Chef::Log.info "Looking for SSL certificate #{name.inspect}"
+
+  if Chef::Config[:solo]
+    Chef::Log.info "We need chef-solo-search now.."
+    include_recipe "chef-solo-search::default"
+  end
+
   cert = search(:certificates, "name:#{name}").first
 
   raise "Could not find a data bag item with 'name:#{name}' in the 'certificates' data bag" if cert.nil?
