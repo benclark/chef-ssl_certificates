@@ -4,14 +4,9 @@ maintainer_email 't@binarymarbles.com'
 license          'Apache 2.0'
 description      'Installs and configures SSL certificates.'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          '1.1.2'
-
-supports         'debian'
+version          '1.2.0'
 
 recipe           'ssl_certificates', 'Installs and configures SSL certificates.'
-
-# This dependency is for Chef Solo only, so we don't really want to depend on this in Chef Client
-# depends          'chef-solo-search'
 
 attribute 'ssl_certificates',
   :display_name => 'SSL certificates',
