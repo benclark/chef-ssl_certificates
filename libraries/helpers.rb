@@ -19,14 +19,6 @@ class Chef
   class Recipe
 
     def get_ssl_certificate(name)
-      # Require chef-vault.
-      unless Chef::Config[:solo]
-        begin
-          require 'chef-vault'
-        rescue LoadError
-          Chef::Log.warn("Missing gem 'chef-vault', use chef_gem resource to install it first.")
-        end
-      end
       if Chef::Config[:solo]
         begin
           cert_data = data_bag_item(:certificates, name).to_hash
@@ -34,11 +26,8 @@ class Chef
           Chef::Log.warn("Could not load certificate #{name} from data bag!")
         end
       else
-        begin
-          cert_data = ChefVault::Item.load(:certificates, name).to_hash
-        rescue ChefVault::Exceptions::KeysNotFound
-          Chef::Log.warn("Could not load certificate #{name} from vault!")
-        end
+        cert_secret = Chef::EncryptedDataBagItem.load_secret(node['ssl_certificates']['secretfile'])
+        cert_data = Chef::EncryptedDataBagItem.load(:certificates, name, cert_secret).to_hash
       end
       cert_data
     end
