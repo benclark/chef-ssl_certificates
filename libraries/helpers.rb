@@ -20,6 +20,12 @@ class Chef
 
     def get_ssl_certificate(name, environment = nil)
       environment ||= node.chef_environment
+      cache = get_ssl_certificate_cache(environment)
+      cache[name] || node.run_state['ssl_certificates'][environment][name] = fetch_ssl_certificate(name, environment)
+    end
+
+    def fetch_ssl_certificate(name, environment = nil)
+      environment ||= node.chef_environment
       if Chef::Config[:solo]
         begin
           cert_data = data_bag_item(:certificates, name).to_hash
@@ -40,6 +46,11 @@ class Chef
       else
         cert_data
       end
+    end
+
+    def get_ssl_certificate_cache(environment)
+      node.run_state['ssl_certificates'] ||= {}
+      node.run_state['ssl_certificates'][environment] ||= {}
     end
   end
 end
