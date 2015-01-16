@@ -18,7 +18,8 @@
 class Chef
   class Recipe
 
-    def get_ssl_certificate(name)
+    def get_ssl_certificate(name, environment = nil)
+      environment ||= node.chef_environment
       if Chef::Config[:solo]
         begin
           cert_data = data_bag_item(:certificates, name).to_hash
@@ -29,8 +30,16 @@ class Chef
         cert_secret = Chef::EncryptedDataBagItem.load_secret(node['ssl_certificates']['secretfile'])
         cert_data = Chef::EncryptedDataBagItem.load(:certificates, name, cert_secret).to_hash
       end
-      cert_data
+      prep_ssl_certificate(cert_data, environment)
     end
 
+    def prep_ssl_certificate(cert_data, environment = nil)
+      environment ||= node.chef_environment
+      if !cert_data['environments'].nil? && !cert_data['environments'][environment].nil?
+        cert_data.merge(cert_data['environments'][environment])
+      else
+        cert_data
+      end
+    end
   end
 end
