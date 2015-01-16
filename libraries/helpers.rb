@@ -26,6 +26,7 @@ class Chef
 
     def fetch_ssl_certificate(name, environment = nil)
       environment ||= node.chef_environment
+      Chef::Log.info("Fetching ssl certificate for #{name} in #{environment} environment")
       if Chef::Config[:solo]
         begin
           cert_data = data_bag_item(:certificates, name).to_hash
