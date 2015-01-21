@@ -37,7 +37,8 @@ class Chef
         cert_secret = Chef::EncryptedDataBagItem.load_secret(node['ssl_certificates']['secretfile'])
         cert_data = Chef::EncryptedDataBagItem.load(:certificates, name, cert_secret).to_hash
       end
-      prep_ssl_certificate(cert_data, environment)
+      cert_data = prep_ssl_certificate(cert_data, environment)
+      prep_ssl_certificate_paths(cert_data)
     end
 
     def prep_ssl_certificate(cert_data, environment = nil)
@@ -47,6 +48,18 @@ class Chef
       else
         cert_data
       end
+    end
+
+    def prep_ssl_certificate_paths(cert_data)
+      cert_data['path'] ||= node[:ssl_certificates][:path]
+      cert_data['private_path'] ||= node[:ssl_certificates][:private_path]
+
+      cert_data['crt_path'] ||= "#{node[:ssl_certificates][:path]}/#{cert_data['id']}.crt"
+      cert_data['ca_bundle_path'] ||= "#{node[:ssl_certificates][:path]}/#{cert_data['id']}.ca-bundle"
+      cert_data['key_path'] ||= "#{node[:ssl_certificates][:private_path]}/#{cert_data['id']}.key"
+      cert_data['pem_path'] ||= "#{node[:ssl_certificates][:path]}/#{cert_data['id']}.pem"
+
+      cert_data
     end
 
     def get_ssl_certificate_cache(environment)

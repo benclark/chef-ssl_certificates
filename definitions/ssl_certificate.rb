@@ -26,14 +26,14 @@ define :ssl_certificate do
   raise "Could not find a data bag item with 'name:#{name}' in the 'certificates' data bag" if cert.nil?
 
   # Create the directory where SSL certificates will be stored.
-  directory node[:ssl_certificates][:path] do
+  directory cert['path'] do
     owner 'root'
     group 'root'
     mode '0755'
   end
 
   # Create the directory where SSL private keys will be stored.
-  directory node[:ssl_certificates][:private_path] do
+  directory cert['private_path'] do
     owner 'root'
     group 'root'
     mode '0700'
@@ -46,7 +46,7 @@ define :ssl_certificate do
         certfile_content += "\n" + cert['ca_bundle']
     end
 
-    file "#{node[:ssl_certificates][:path]}/#{name}.crt" do
+    file cert['crt_path'] do
       content certfile_content
       owner 'root'
       group 'root'
@@ -54,7 +54,7 @@ define :ssl_certificate do
     end
   end
 
-  file "#{node[:ssl_certificates][:path]}/#{name}.ca-bundle" do
+  file cert['ca_bundle_path'] do
     content cert['ca_bundle']
     owner 'root'
     group 'root'
@@ -62,7 +62,7 @@ define :ssl_certificate do
     only_if { cert['ca_bundle'] && ! params[:ca_bundle_combined] }
   end
 
-  file "#{node[:ssl_certificates][:private_path]}/#{name}.key" do
+  file cert['key_path'] do
     content cert['key']
     owner 'root'
     group 'root'
@@ -70,7 +70,7 @@ define :ssl_certificate do
     only_if { cert['key'] }
   end
 
-  file "#{node[:ssl_certificates][:path]}/#{name}.pem" do
+  file cert['pem_path'] do
     content cert['pem']
     owner 'root'
     group 'root'
